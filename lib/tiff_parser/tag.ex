@@ -27,14 +27,18 @@ defmodule TiffParser.Tag do
 
   @spec parse(
           tag_buffer :: binary,
-          tiff_header :: TiffParser.Header,
-          start_of_tiff :: non_neg_integer
+          endian :: :little | :big,
+          start_of_tiff :: non_neg_integer,
+          tag_type :: TiffParser.Tag.LookUp.tag_type
         ) :: {:ok, __MODULE__} | {:error, String.t()}
+
+  def parse(tag_buffer, header, start_of_tiff, tag_type \\ :tiff)
   def parse(
         <<tag_id::binary-size(2), type_id::binary-size(2), tag_count::binary-size(4),
           value::binary-size(4)>>,
-        %{identifier: endian},
-        start_of_tiff
+        endian,
+        start_of_tiff,
+        tag_type
       ) do
     tag_id = :binary.decode_unsigned(tag_id, endian)
     data_type =
@@ -51,8 +55,8 @@ defmodule TiffParser.Tag do
             data_type: data_type,
             data_count: tag_count,
             value: value}
-      |> TiffParser.Tag.LookUp.look_up_name()
+      |> TiffParser.Tag.LookUp.look_up_name(tag_type)
       |> TiffParser.Tag.Value.decode_tag(endian)
   end
-  def parse(_,_,_), do: {}
+  def parse(_,_,_,_), do: {}
 end

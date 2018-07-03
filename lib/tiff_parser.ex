@@ -19,7 +19,7 @@ defmodule TiffParser do
 
   def parse_tiff_binary(<<header::binary-size(8), _rest::binary>> = start_of_tiff) do
     with {:ok, header} <- Header.parse(header),
-         ifds <- IFD.parse_ifds(header, start_of_tiff, header.ifd_offset) do
+         ifds <- IFD.parse_ifds(header.identifier, start_of_tiff, header.ifd_offset) do
       {:ok, ifds}
     else
       err -> err
