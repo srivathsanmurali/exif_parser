@@ -86,7 +86,7 @@ defmodule TiffParser.Tag do
             data_type: data_type,
             data_count: tag_count,
             value: value}
-      |> TiffParser.TagLookUp.look_up_name()
+      |> TiffParser.Tag.LookUp.look_up_name()
       #|> TiffParser.TagLookUp.look_up_value()
   end
   def parse(_,_,_), do: {}
