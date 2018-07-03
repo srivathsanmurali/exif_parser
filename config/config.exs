@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :tiff_parser, key: :value
+#     config :exif_parser, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:tiff_parser, :key)
+#     Application.get_env(:exif_parser, :key)
 #
 # You can also configure a 3rd-party app:
 #

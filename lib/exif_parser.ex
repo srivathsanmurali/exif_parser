@@ -1,12 +1,12 @@
-defmodule TiffParser do
+defmodule ExifParser do
   @max_length 2 * (65536 + 2)
 
   # jpeg constants
   @jpeg_start_of_image 0xffd8
   @jpeg_app1 0xffe1
 
-  alias TiffParser.Header
-  alias TiffParser.ImageFileDirectory, as: IFD
+  alias ExifParser.Header
+  alias ExifParser.ImageFileDirectory, as: IFD
 
   def parse_tiff_file(filepath) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
