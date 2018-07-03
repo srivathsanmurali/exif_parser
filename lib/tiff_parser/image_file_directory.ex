@@ -26,8 +26,10 @@ defmodule TiffParser.ImageFileDirectory do
 
     next_ifd_offset = :binary.decode_unsigned(next_ifd_offset, endian)
 
-    [%__MODULE__{num_entries: num_entries, offset: ifd_buffer}] ++
-      find_ifds(header, start_of_tiff, next_ifd_offset)
+    [
+      %__MODULE__{num_entries: num_entries, offset: ifd_buffer}
+      | find_ifds(header, start_of_tiff, next_ifd_offset)
+    ]
   end
 
   defp parse_tags(
