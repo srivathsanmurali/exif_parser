@@ -1,4 +1,4 @@
-defmodule TiffParser.Header do
+defmodule ExifParser.Header do
   defstruct identifier: nil,
             version: nil,
             ifd_offset: nil

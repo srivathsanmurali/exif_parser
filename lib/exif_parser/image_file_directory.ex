@@ -1,15 +1,15 @@
-defmodule TiffParser.ImageFileDirectory do
+defmodule ExifParser.ImageFileDirectory do
   defstruct num_entries: nil,
             tag_lists: %{},
             offset: nil
 
-  alias TiffParser.Tag
+  alias ExifParser.Tag
 
   @spec parse_ifds(
           endian :: :little | :big,
           start_of_tiff :: binary,
           offset :: non_neg_integer,
-          tag_type :: TiffParser.Tag.LookUp.tag_type) :: [__MODULE__]
+          tag_type :: ExifParser.Tag.LookUp.tag_type) :: [__MODULE__]
   def parse_ifds(endian, start_of_tiff, offset, tag_type \\ :tiff) do
     find_ifds(endian, start_of_tiff, offset)
     |> Enum.map(&parse_tags(&1, endian, start_of_tiff, tag_type))

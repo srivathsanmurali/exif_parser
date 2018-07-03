@@ -1,5 +1,5 @@
-defmodule TiffParser.Tag.Value do
-  alias TiffParser.Tag
+defmodule ExifParser.Tag.Value do
+  alias ExifParser.Tag
 
   # 2^31
   @max_signed_32_bit_int 2_147_483_648

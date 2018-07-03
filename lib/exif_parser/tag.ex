@@ -1,4 +1,4 @@
-defmodule TiffParser.Tag do
+defmodule ExifParser.Tag do
   defstruct tag_id: nil,
             data_type: nil,
             data_count: nil,
@@ -29,7 +29,7 @@ defmodule TiffParser.Tag do
           tag_buffer :: binary,
           endian :: :little | :big,
           start_of_tiff :: non_neg_integer,
-          tag_type :: TiffParser.Tag.LookUp.tag_type()
+          tag_type :: ExifParser.Tag.LookUp.tag_type()
         ) :: {:ok, __MODULE__} | {:error, String.t()}
 
   def parse(tag_buffer, header, start_of_tiff, tag_type \\ :tiff)
@@ -45,16 +45,16 @@ defmodule TiffParser.Tag do
 
     data_type =
       :binary.decode_unsigned(type_id, endian)
-      |> TiffParser.Tag.Value.type_id_to_data_type()
+      |> ExifParser.Tag.Value.type_id_to_data_type()
 
     tag_count = :binary.decode_unsigned(tag_count, endian)
-    tag_length = TiffParser.Tag.Value.data_type_to_byte_length(data_type, tag_count)
+    tag_length = ExifParser.Tag.Value.data_type_to_byte_length(data_type, tag_count)
 
     value = value_offset_correction(value, tag_length, endian, start_of_tiff)
 
     %__MODULE__{tag_id: tag_id, data_type: data_type, data_count: tag_count, value: value}
-    |> TiffParser.Tag.LookUp.look_up_name(tag_type)
-    |> TiffParser.Tag.Value.decode_tag(endian)
+    |> ExifParser.Tag.LookUp.look_up_name(tag_type)
+    |> ExifParser.Tag.Value.decode_tag(endian)
     |> parse_sub_ifd(start_of_tiff, endian)
   end
 
@@ -71,7 +71,7 @@ defmodule TiffParser.Tag do
        )
        when tag_id in [:exif_sub_ifd, :gps_sub_ifd, :interoperability_sub_ifd] do
     sub_ifd =
-      TiffParser.ImageFileDirectory.parse_ifds(
+      ExifParser.ImageFileDirectory.parse_ifds(
         endian,
         start_of_tiff,
         sub_ifd_offset,

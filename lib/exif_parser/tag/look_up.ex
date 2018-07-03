@@ -1,5 +1,5 @@
-defmodule TiffParser.Tag.LookUp do
-  alias TiffParser.Tag
+defmodule ExifParser.Tag.LookUp do
+  alias ExifParser.Tag
   
   @type tag_type :: :tiff | :exif | :interop | :gps
   @spec look_up_name(tag :: Tag, tag_type :: tag_type) :: atom
