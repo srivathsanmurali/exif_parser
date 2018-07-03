@@ -22,7 +22,7 @@ defmodule TiffParser.Tag do
           tag_id: non_neg_integer,
           data_type: data_types,
           data_count: non_neg_integer,
-          data_offset: any
+          value: any
         }
   def type_id_to_data_type(1), do: :tiff_byte
   def type_id_to_data_type(2), do: :tiff_ascii
