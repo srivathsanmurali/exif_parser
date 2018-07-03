@@ -1,6 +1,6 @@
 defmodule TiffParser.ImageFileDirectory do
   defstruct num_entries: nil,
-            tag_lists: [],
+            tag_lists: %{},
             offset: nil
 
   alias TiffParser.Tag
@@ -27,12 +27,14 @@ defmodule TiffParser.ImageFileDirectory do
   def parse_tags(%__MODULE__{offset: ifd_offset, num_entries: num_entries}, header, start_of_tiff) do
     tag_lists = 
       0..num_entries-1
-      |> Enum.map(fn x -> 
-            tag_offset = x*12
-            <<_ :: binary-size(tag_offset), tag_buffer ::binary-size(12), _rest::binary>> = ifd_offset
-            Tag.parse(tag_buffer, header, start_of_tiff)
-          end)
+      |> Enum.reduce(Map.new(), fn(x, acc) -> 
+              tag_offset = x*12
+              <<_ :: binary-size(tag_offset), tag_buffer ::binary-size(12), _rest::binary>> = ifd_offset
+              tag = Tag.parse(tag_buffer, header, start_of_tiff)
+              Map.put(acc, tag.tag_id, tag)
+            end
+          )
 
-    %__MODULE__{offset: ifd_offset, tag_lists: tag_lists, num_entries: num_entries}
+    %__MODULE__{offset: nil, tag_lists: tag_lists, num_entries: num_entries}
   end
 end

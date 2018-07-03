@@ -2,7 +2,7 @@ defmodule TiffParser.Tag do
   defstruct tag_id: nil,
             data_type: nil,
             data_count: nil,
-            data_offset: nil
+            value: nil
 
   @type data_types ::
           :tiff_byte
@@ -80,7 +80,7 @@ defmodule TiffParser.Tag do
     %__MODULE__{tag_id: tag_id,
             data_type: data_type,
             data_count: tag_count,
-            data_offset: value}
+            value: value}
   end
   def parse(_,_,_), do: {}
 end
