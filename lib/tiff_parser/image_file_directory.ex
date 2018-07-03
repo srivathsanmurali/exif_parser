@@ -5,11 +5,16 @@ defmodule TiffParser.ImageFileDirectory do
 
   alias TiffParser.Tag
 
-  def parse_ifds(_, _, 0) do
+  def parse_ifds(header, start_of_tiff, offset) do
+    find_ifds(header, start_of_tiff, offset)
+    |> Enum.map(&parse_tags(&1, header, start_of_tiff))
+  end
+
+  defp find_ifds(_, _, 0) do
     []
   end
 
-  def parse_ifds(%TiffParser.Header{identifier: endian} = header, start_of_tiff, offset) do
+  defp find_ifds(%TiffParser.Header{identifier: endian} = header, start_of_tiff, offset) do
     <<_::binary-size(offset), num_entries::binary-size(2), _rest::binary>> = start_of_tiff
     num_entries = :binary.decode_unsigned(num_entries, endian)
     ifd_byte_size = num_entries * 12
@@ -21,11 +26,8 @@ defmodule TiffParser.ImageFileDirectory do
 
     next_ifd_offset = :binary.decode_unsigned(next_ifd_offset, endian)
 
-    ifd =
-      %__MODULE__{num_entries: num_entries, offset: ifd_buffer}
-      |> parse_tags(header, start_of_tiff)
-
-    [ifd] ++ parse_ifds(header, start_of_tiff, next_ifd_offset)
+    [%__MODULE__{num_entries: num_entries, offset: ifd_buffer}] ++
+      find_ifds(header, start_of_tiff, next_ifd_offset)
   end
 
   defp parse_tags(

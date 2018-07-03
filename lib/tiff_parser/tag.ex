@@ -49,6 +49,20 @@ defmodule TiffParser.Tag do
   defp data_type_to_byte_length(:tiff_sfloat, component_count ), do: 4 * component_count
   defp data_type_to_byte_length(:tiff_dfloat, component_count ), do: 8 * component_count
 
+  defp value_offset_correction(value, tag_length, endian, start_of_tiff)
+      when tag_length > 4 do
+    value_offset = :binary.decode_unsigned(value, endian)
+
+    <<_::binary-size(value_offset), new_value::binary-size(tag_length), _::binary>> =
+      start_of_tiff
+
+    new_value
+  end
+
+  defp value_offset_correction(value, _tag_length, _endian, _start_of_tiff) do
+    value
+  end
+
   @spec parse(
           tag_buffer :: binary,
           tiff_header :: TiffParser.Header,
@@ -65,17 +79,8 @@ defmodule TiffParser.Tag do
     tag_count = :binary.decode_unsigned(tag_count, endian)
     tag_length = data_type_to_byte_length(data_type, tag_count)
 
-    value =
-      if tag_length > 4 do
-        value_offset = :binary.decode_unsigned(value, endian)
-
-        <<_::binary-size(value_offset), new_value::binary-size(tag_length), _::binary>> =
-          start_of_tiff
-
-        new_value
-      else
-        value
-      end
+    value = 
+      value_offset_correction(value, tag_length, endian, start_of_tiff)
 
     %__MODULE__{tag_id: tag_id,
             data_type: data_type,
