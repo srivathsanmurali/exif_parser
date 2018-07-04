@@ -1,4 +1,21 @@
 defmodule ExifParser.Tag do
+  @moduledoc """
+  Tiff Tag parser. Parses the 12 bytes that represent the information contained
+  in the TIFF tags.
+
+  |           |         |
+  |-----------|---------|
+  | tag_id    | 2 bytes |
+  | type_id   | 2 bytes |
+  | tag_count | 4 bytes |
+  | tag_vaue  | 4 bytes |
+  
+  The tag_id if referenced in the lookup table and tag_name field is updated
+  with a more human readable atom value.
+
+  The value is updated to the decoded value according to the data type.
+  """
+  
   defstruct tag_id: nil,
             tag_name: nil,
             data_type: nil,
@@ -27,6 +44,18 @@ defmodule ExifParser.Tag do
     value
   end
 
+  @doc """
+  The method parses the a binary buffer that contains a tag.
+
+  + The tag_id, type_id and tag_count are decode by converting binary to integer.
+  + The tag_id and tag_type is used to look up the tag_name.
+  + The value of the tag is decoded using the type_id and tag_cousing the tag_type and tag_count.
+
+  The tag_type is set to :tiff by default. 
+
+  The result can be either a 
+  {:ok, Tag} or {:error, String}
+  """
   @spec parse(
           tag_buffer :: binary,
           endian :: :little | :big,

@@ -69,10 +69,7 @@ iex(2)> {:ok, tags} = ExifParser.parse_tiff_file("/home/sri/exif_tests/test1.tif
 }}
 ```
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `exif_parser` to your list of dependencies in `mix.exs`:
+## Using the package as a dependency.
 
 ```elixir
 def deps do
@@ -81,8 +78,4 @@ def deps do
   ]
 end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/exif_parser](https://hexdocs.pm/exif_parser).
 

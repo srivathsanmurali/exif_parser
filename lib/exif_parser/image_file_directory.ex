@@ -1,10 +1,39 @@
 defmodule ExifParser.ImageFileDirectory do
+  @moduledoc """
+  Tiff Image File Directory parser. Parses the IFD that provides the number of
+  tags in the IFD and offset from the start of the file buffer.
+
+  ## Struct
+  ### num_entries
+  The length of the IFD desciptor helps in parsing the IFD.
+  This can be used to find the end of the IFD.
+
+  ### tag_lists
+  This holds the map of tags. The keys in the map are tag_names and the values
+  are tag_values.
+
+  ### offset
+  This represents the non-neg-integer that gives the number of bytes offset from
+  the start of tiff buffer.
+  """
   defstruct num_entries: nil,
             tag_lists: %{},
             offset: nil
 
+  @type t :: %__MODULE__{
+    num_entries: non_neg_integer,
+    tag_lists: map,
+    offset: non_neg_integer
+  }
+
   alias ExifParser.Tag
 
+  @doc """
+  The IFDs are parsed from the tiff buffer. The map keys for the IFDs are updated
+  and prettified if passed as argument.
+
+  The output is made pretty by default.
+  """
   @spec parse_tiff_body(
           endian :: :little | :big,
           start_of_tiff :: binary,
@@ -23,6 +52,12 @@ defmodule ExifParser.ImageFileDirectory do
     |> ExifParser.Pretty.prettify()
   end
 
+  @doc """
+  This method parses the ifds that are reachable, given the endianess, tiff_buffer,
+  and the offset.
+
+  The IFD are first found and the tags in each of them parsed.
+  """
   @spec parse_ifds(
           endian :: :little | :big,
           start_of_tiff :: binary,

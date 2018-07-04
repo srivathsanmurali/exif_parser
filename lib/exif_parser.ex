@@ -1,4 +1,74 @@
 defmodule ExifParser do
+  @moduledoc """
+  Parse EXIF/TIFF metadata from JPEG and TIFF files.
+  Exif/TIFF referes to the metadata added to jpeg images. It is encoded as part of the jpeg file.
+
+  There are multiple so-called "Image File Directories" or IFD that store information about the image.
+  + IFD0 generally stores the image, EXIF and GPS metadata
+  + IFD1 when available stores the information about a thumbnail image.
+
+  ## Usage
+
+  ### Read from jpeg file
+  Read data from a binary jpeg file.
+
+  ```
+  iex(1)> {:ok, tags} = ExifParser.parse_jpeg_file("/path/to/file.jpg")
+  {:ok,
+   %{
+     ifd0: %{
+       date_time: "2008:07:31 10:05:49",
+       exif: %{color_space: 1, pixel_x_dimension: 100, pixel_y_dimension: 77},
+       orientation: 1,
+       resolution_unit: 2,
+       software: "GIMP 2.4.5",
+       x_resolution: 300.0,
+       y_resolution: 300.0
+     },
+     ifd1: %{
+       compression: 6,
+       jpeg_interchange_format: 282,
+       jpeg_interchange_format_length: 2022,
+       resolution_unit: 2,
+       x_resolution: 72.0,
+       y_resolution: 72.0
+     }
+   }}
+  ```
+
+  A specific tag data can be retrived by 
+  ```
+  iex(2)> tags.ifd0.date_time
+  "2008:07:31 10:05:49"
+  iex(3)> tags.ifd0.exif.color_space
+  1
+  ```
+
+  ### Read from tiff file
+  Data can also be read from binary tiff files.
+
+  ```
+  iex(2)> {:ok, tags} = ExifParser.parse_tiff_file("/home/sri/exif_tests/test1.tiff")
+  {:ok,
+   %{
+     ifd0: %{
+       bits_per_sample: '\b\b\b\b',
+       compression: 5,
+       extra_samples: 1,
+       image_length: 38,
+       image_width: 174,
+       orientation: 1,
+       photometric_interpretation: 2,
+       planar_configuration: 1,
+       predictor: 2,
+       rows_per_strip: 38,
+       sample_format: [1, 1, 1, 1],
+       samples_per_pixel: 4,
+       strip_byte_counts: 6391,
+       strip_offsets: 8
+  }}
+  ```
+  """
   @max_length 2 * (65536 + 2)
 
   # jpeg constants
@@ -13,32 +83,43 @@ defmodule ExifParser do
     @moduledoc """
     Options that are passed to the API.
     Currently only two options are used.
-    
-    # prettify
+
+    ### prettify
       This enables makes the tag output pretty.
       The values can be set to false to get data used to parse.
         
       **Default: true**
 
 
-    # tag_offsets_and_names
+    ### tag_offsets_and_names
       This lets the user parse custom tags at custom memory locations.
       
+      ```
       %ExifParser.Options {
         tag_offsets_and_names: [{MEMORY_LOCATION, :custom_tag_name}]
       }
+      ```
     """
     defstruct prettify: true,
               tag_offsets_and_names: nil
 
     @type t :: %__MODULE__{
-      prettify: Boolean,
-      tag_offsets_and_names: map
-    }
+            prettify: Boolean,
+            tag_offsets_and_names: map
+          }
   end
 
   @doc """
   EXIF/TIFF data can be loaded from tiff binary files 
+
+  ```
+  ExifParser.parse_tiff_file("/path/to/file.tiff")
+  ```
+
+  returns 
+  ```
+  {:ok, tags}
+  ```
   """
   def parse_tiff_file(filepath, options \\ %ExifParser.Options{}) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
@@ -82,6 +163,15 @@ defmodule ExifParser do
 
   @doc """
   EXIF/TIFF data can be loaded from jpeg binary files 
+
+  ```
+  ExifParser.parse_jpeg_file("/path/to/file.jpeg")
+  ```
+
+  returns 
+  ```
+  {:ok, tags}
+  ```
   """
   def parse_jpeg_file(filepath, options \\ %ExifParser.Options{}) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
