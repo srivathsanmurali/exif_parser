@@ -32,8 +32,9 @@ defmodule ExifParser.MixProject do
   defp package() do
     [
       name: "exif_parser",
+      maintainers: ["Srivathsan Murali"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => "https://github.com/srivathsanmurali/exif_parser"},
+      links: %{"GitHub" => "https://github.com/srivathsanmurali/exif_parser"}
     ]
   end
 end
