@@ -4,7 +4,7 @@ defmodule ExifParser.MixProject do
   def project do
     [
       app: :exif_parser,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -32,8 +32,9 @@ defmodule ExifParser.MixProject do
   defp package() do
     [
       name: "exif_parser",
+      maintainers: ["Srivathsan Murali"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => "https://github.com/srivathsanmurali/exif_parser"},
+      links: %{"GitHub" => "https://github.com/srivathsanmurali/exif_parser"}
     ]
   end
 end
