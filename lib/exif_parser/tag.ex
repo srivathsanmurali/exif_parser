@@ -1,11 +1,13 @@
 defmodule ExifParser.Tag do
   defstruct tag_id: nil,
+            tag_name: nil,
             data_type: nil,
             data_count: nil,
             value: nil
 
   @type t :: %__MODULE__{
           tag_id: non_neg_integer,
+          tag_name: atom,
           data_type: Value.data_types(),
           data_count: non_neg_integer,
           value: any
@@ -41,7 +43,7 @@ defmodule ExifParser.Tag do
         start_of_tiff,
         tag_type
       ) do
-    tag_id = :binary.decode_unsigned(tag_id, endian)
+    tag_id= :binary.decode_unsigned(tag_id, endian)
 
     data_type =
       :binary.decode_unsigned(type_id, endian)
@@ -61,17 +63,17 @@ defmodule ExifParser.Tag do
   def parse(_, _, _, _), do: {}
 
   defp parse_sub_ifd(
-         %__MODULE__{tag_id: tag_id, value: sub_ifd_offset} = tag,
+         %__MODULE__{tag_name: tag_name, value: sub_ifd_offset} = tag,
          start_of_tiff,
          endian
        )
-       when tag_id in [:exif, :gps, :interoperability] do
+       when tag_name in [:exif, :gps, :interoperability] do
     [sub_ifd | []]=
       ExifParser.ImageFileDirectory.parse_ifds(
         endian,
         start_of_tiff,
         sub_ifd_offset,
-        tag_id
+        tag_name
       )
 
     %__MODULE__{tag | value: sub_ifd}

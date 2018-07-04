@@ -78,7 +78,7 @@ defmodule ExifParser.ImageFileDirectory do
         tag_offset = x * 12
         <<_::binary-size(tag_offset), tag_buffer::binary-size(12), _rest::binary>> = ifd_offset
         tag = Tag.parse(tag_buffer, endian, start_of_tiff, tag_type)
-        Map.put(acc, tag.tag_id, tag)
+        Map.put(acc, tag.tag_name, tag)
       end)
 
     %__MODULE__{offset: ifd_offset, num_entries: num_entries, tag_lists: tag_lists}
