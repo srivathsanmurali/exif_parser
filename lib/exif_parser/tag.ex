@@ -56,7 +56,6 @@ defmodule ExifParser.Tag do
     |> ExifParser.Tag.LookUp.look_up_name(tag_type)
     |> ExifParser.Tag.Value.decode_tag(endian)
     |> parse_sub_ifd(start_of_tiff, endian)
-    |> (fn %__MODULE__{tag_id: tag_id, value: value} -> {tag_id, value} end).()
   end
 
   def parse(_, _, _, _), do: {}

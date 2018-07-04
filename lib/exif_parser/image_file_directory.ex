@@ -68,10 +68,10 @@ defmodule ExifParser.ImageFileDirectory do
       |> Enum.reduce(Map.new(), fn x, acc ->
         tag_offset = x * 12
         <<_::binary-size(tag_offset), tag_buffer::binary-size(12), _rest::binary>> = ifd_offset
-        {tag_id, value} = Tag.parse(tag_buffer, endian, start_of_tiff, tag_type)
-        Map.put(acc, tag_id, value)
+        tag = Tag.parse(tag_buffer, endian, start_of_tiff, tag_type)
+        Map.put(acc, tag.tag_id, tag)
       end)
 
-    tag_lists
+    %__MODULE__{offset: ifd_offset, num_entries: num_entries, tag_lists: tag_lists}
   end
 end
