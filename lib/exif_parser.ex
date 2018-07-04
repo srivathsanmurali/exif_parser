@@ -10,10 +10,36 @@ defmodule ExifParser do
   alias ExifParser.CustomLocationTag, as: CLT
 
   defmodule Options do
+    @moduledoc """
+    Options that are passed to the API.
+    Currently only two options are used.
+    
+    # prettify
+      This enables makes the tag output pretty.
+      The values can be set to false to get data used to parse.
+        
+      **Default: true**
+
+
+    # tag_offsets_and_names
+      This lets the user parse custom tags at custom memory locations.
+      
+      %ExifParser.Options {
+        tag_offsets_and_names: [{MEMORY_LOCATION, :custom_tag_name}]
+      }
+    """
     defstruct prettify: true,
               tag_offsets_and_names: nil
+
+    @type t :: %__MODULE__{
+      prettify: Boolean,
+      tag_offsets_and_names: map
+    }
   end
 
+  @doc """
+  EXIF/TIFF data can be loaded from tiff binary files 
+  """
   def parse_tiff_file(filepath, options \\ %ExifParser.Options{}) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
          {:ok, tiff} <- parse_tiff_binary(buffer, options) do
@@ -23,6 +49,9 @@ defmodule ExifParser do
     end
   end
 
+  @doc """
+  EXIF/TIFF data can be loaded from tiff binary buffers
+  """
   def parse_tiff_binary(
         <<header::binary-size(8), _rest::binary>> = start_of_tiff,
         options \\ %ExifParser.Options{}
@@ -51,6 +80,9 @@ defmodule ExifParser do
     end
   end
 
+  @doc """
+  EXIF/TIFF data can be loaded from jpeg binary files 
+  """
   def parse_jpeg_file(filepath, options \\ %ExifParser.Options{}) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
          {:ok, buffer} <- find_app1(buffer),
