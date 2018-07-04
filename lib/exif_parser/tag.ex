@@ -56,26 +56,23 @@ defmodule ExifParser.Tag do
     |> ExifParser.Tag.LookUp.look_up_name(tag_type)
     |> ExifParser.Tag.Value.decode_tag(endian)
     |> parse_sub_ifd(start_of_tiff, endian)
+    |> (fn %__MODULE__{tag_id: tag_id, value: value} -> {tag_id, value} end).()
   end
 
   def parse(_, _, _, _), do: {}
-
-  defp sub_ifd_tag_to_type(:exif_sub_ifd), do: :exif
-  defp sub_ifd_tag_to_type(:gps_sub_ifd), do: :gps
-  defp sub_ifd_tag_to_type(:interoperability_sub_ifd), do: :interop
 
   defp parse_sub_ifd(
          %__MODULE__{tag_id: tag_id, value: sub_ifd_offset} = tag,
          start_of_tiff,
          endian
        )
-       when tag_id in [:exif_sub_ifd, :gps_sub_ifd, :interoperability_sub_ifd] do
-    sub_ifd =
+       when tag_id in [:exif, :gps, :interoperability] do
+    [sub_ifd | []]=
       ExifParser.ImageFileDirectory.parse_ifds(
         endian,
         start_of_tiff,
         sub_ifd_offset,
-        sub_ifd_tag_to_type(tag_id)
+        tag_id
       )
 
     %__MODULE__{tag | value: sub_ifd}

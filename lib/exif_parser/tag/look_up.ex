@@ -92,11 +92,11 @@ defmodule ExifParser.Tag.LookUp do
   def look_up_name(%Tag{tag_id: 0x829d} = tag, :tiff), do: %Tag{tag | tag_id: :f_number}
   def look_up_name(%Tag{tag_id: 0x83bb} = tag, :tiff), do: %Tag{tag | tag_id: :iptcnaa}
   def look_up_name(%Tag{tag_id: 0x8649} = tag, :tiff), do: %Tag{tag | tag_id: :image_resources}
-  def look_up_name(%Tag{tag_id: 0x8769} = tag, :tiff), do: %Tag{tag | tag_id: :exif_sub_ifd}
+  def look_up_name(%Tag{tag_id: 0x8769} = tag, :tiff), do: %Tag{tag | tag_id: :exif}
   def look_up_name(%Tag{tag_id: 0x8773} = tag, :tiff), do: %Tag{tag | tag_id: :inter_color_profile}
   def look_up_name(%Tag{tag_id: 0x8822} = tag, :tiff), do: %Tag{tag | tag_id: :exposure_program}
   def look_up_name(%Tag{tag_id: 0x8824} = tag, :tiff), do: %Tag{tag | tag_id: :spectral_sensitivity}
-  def look_up_name(%Tag{tag_id: 0x8825} = tag, :tiff), do: %Tag{tag | tag_id: :gps_sub_ifd}
+  def look_up_name(%Tag{tag_id: 0x8825} = tag, :tiff), do: %Tag{tag | tag_id: :gps}
   def look_up_name(%Tag{tag_id: 0x8827} = tag, :tiff), do: %Tag{tag | tag_id: :iso_speed_ratings}
   def look_up_name(%Tag{tag_id: 0x8828} = tag, :tiff), do: %Tag{tag | tag_id: :oecf}
   def look_up_name(%Tag{tag_id: 0x8829} = tag, :tiff), do: %Tag{tag | tag_id: :interlace}
@@ -251,7 +251,7 @@ defmodule ExifParser.Tag.LookUp do
   def look_up_name(%Tag{tag_id: 0xa002} = tag, :exif), do: %Tag{tag | tag_id: :pixel_x_dimension}
   def look_up_name(%Tag{tag_id: 0xa003} = tag, :exif), do: %Tag{tag | tag_id: :pixel_y_dimension}
   def look_up_name(%Tag{tag_id: 0xa004} = tag, :exif), do: %Tag{tag | tag_id: :related_sound_file}
-  def look_up_name(%Tag{tag_id: 0xa005} = tag, :exif), do: %Tag{tag | tag_id: :interoperability_sub_ifd}
+  def look_up_name(%Tag{tag_id: 0xa005} = tag, :exif), do: %Tag{tag | tag_id: :interoperability}
   def look_up_name(%Tag{tag_id: 0xa20b} = tag, :exif), do: %Tag{tag | tag_id: :flash_energy}
   def look_up_name(%Tag{tag_id: 0xa20c} = tag, :exif), do: %Tag{tag | tag_id: :spatial_frequency_response}
   def look_up_name(%Tag{tag_id: 0xa20e} = tag, :exif), do: %Tag{tag | tag_id: :focal_plane_x_resolution}
