@@ -7,21 +7,33 @@ defmodule ExifParser.MixProject do
       version: "0.2.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description(),
+      name: "exif_parser",
+      source_url: "https://github.com/srivathsanmurali/exif_parser"
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    []
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
+    ]
+  end
+
+  defp description() do
+    "Parse EXIF/TIFF metadata from JPEG and TIFF files."
+  end
+
+  defp package() do
+    [
+      name: "exif_parser",
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/srivathsanmurali/exif_parser"},
     ]
   end
 end
