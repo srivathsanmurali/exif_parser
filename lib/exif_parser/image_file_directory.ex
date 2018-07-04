@@ -20,8 +20,7 @@ defmodule ExifParser.ImageFileDirectory do
   end
 
   def parse_tiff_body(endian, start_of_tiff, offset, true, tag_type) do
-    parse_ifds(endian, start_of_tiff, offset, tag_type)
-    |> name_primary_ifds()
+    parse_tiff_body(endian, start_of_tiff, offset, false, tag_type)
     |> ExifParser.Pretty.prettify()
   end
 
