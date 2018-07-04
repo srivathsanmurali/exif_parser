@@ -9,11 +9,20 @@ defmodule ExifParser.ImageFileDirectory do
           endian :: :little | :big,
           start_of_tiff :: binary,
           offset :: non_neg_integer,
-          tag_type :: ExifParser.Tag.LookUp.tag_type()
+          tag_type :: ExifParser.Tag.LookUp.tag_type(),
+          prettify :: Boolean
         ) :: %{atom: __MODULE__}
-  def parse_tiff_body(endian, start_of_tiff, offset, tag_type \\ :tiff) do
+  def parse_tiff_body(endian, start_of_tiff, offset, prettify, tag_type \\ :tiff)
+
+  def parse_tiff_body(endian, start_of_tiff, offset, false, tag_type) do
     parse_ifds(endian, start_of_tiff, offset, tag_type)
     |> name_primary_ifds()
+  end
+
+  def parse_tiff_body(endian, start_of_tiff, offset, true, tag_type) do
+    parse_ifds(endian, start_of_tiff, offset, tag_type)
+    |> name_primary_ifds()
+    |> ExifParser.Pretty.prettify()
   end
 
   @spec parse_ifds(

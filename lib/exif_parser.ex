@@ -8,28 +8,28 @@ defmodule ExifParser do
   alias ExifParser.Header
   alias ExifParser.ImageFileDirectory, as: IFD
 
-  def parse_tiff_file(filepath) do
+  def parse_tiff_file(filepath, prettify \\ true) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
-         {:ok, tiff} <- parse_tiff_binary(buffer) do
+         {:ok, tiff} <- parse_tiff_binary(buffer, prettify) do
       {:ok, tiff}
     else
       err -> err
     end
   end
 
-  def parse_tiff_binary(<<header::binary-size(8), _rest::binary>> = start_of_tiff) do
+  def parse_tiff_binary(<<header::binary-size(8), _rest::binary>> = start_of_tiff, prettify \\ true) do
     with {:ok, header} <- Header.parse(header),
-         tags <- IFD.parse_tiff_body(header.identifier, start_of_tiff, header.ifd_offset) do
+         tags <- IFD.parse_tiff_body(header.identifier, start_of_tiff, header.ifd_offset, prettify) do
       {:ok, tags}
     else
       err -> err
     end
   end
 
-  def parse_jpeg_file(filepath) do
+  def parse_jpeg_file(filepath, prettify \\ true) do
     with {:ok, buffer} <- File.open(filepath, [:read], &IO.binread(&1, @max_length)),
          {:ok, buffer} <- find_app1(buffer),
-         {:ok, tiff} <- parse_tiff_binary(buffer)
+         {:ok, tiff} <- parse_tiff_binary(buffer, prettify)
     do
       {:ok, tiff}
     else
