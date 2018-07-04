@@ -6,6 +6,9 @@ defmodule ExifParser.Tag.Value do
   # 2^15
   @max_signed_16_bit_int 632_768
 
+  @typedoc """
+    The data types that are represented in TIFF tags.
+  """
   @type data_types ::
           :tiff_byte
           | :tiff_ascii
@@ -19,6 +22,11 @@ defmodule ExifParser.Tag.Value do
           | :tiff_srational
           | :tiff_sfloat
           | :tiff_dfloat
+
+  @doc """
+  The method provides the lookup for the 12 data_types.
+  The data_type can inferred from the type_id in the tag buffer.
+  """
   def type_id_to_data_type(1), do: :tiff_byte
   def type_id_to_data_type(2), do: :tiff_ascii
   def type_id_to_data_type(3), do: :tiff_short
@@ -32,6 +40,10 @@ defmodule ExifParser.Tag.Value do
   def type_id_to_data_type(11), do: :tiff_sfloat
   def type_id_to_data_type(12), do: :tiff_dfloat
 
+  @doc """
+  The method provides the number of bytes that correspond to the data type.
+  It will give the number of bytes for number of components in the tag.
+  """
   def data_type_to_byte_length(data_type, component_count \\ 1)
   def data_type_to_byte_length(:tiff_byte, component_count), do: component_count
   def data_type_to_byte_length(:tiff_ascii, component_count), do: component_count
@@ -98,6 +110,16 @@ defmodule ExifParser.Tag.Value do
     ]
   end
 
+  @doc """
+  The method is used to decode the binary value in the tag buffer based on the data_type
+  and endianess of the file.
+
+  The total data size is computed based on the type size and the number of components.
+
+  + If the data_size is less or equal to 4 bytes, the value binary represents the actual value.
+  + If the data_size is greater than 4, the binary value represents the offset in
+  the file buffer that points to the actual data.
+  """
   @spec decode_tag(tag :: Tag, endian :: :little | :big) :: Tag
   def decode_tag(%Tag{data_type: :tiff_byte, data_count: data_count, value: value} = tag, endian),
     do: %Tag{tag | value: decode_numeric(value, data_count, 1, endian)}
