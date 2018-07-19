@@ -59,4 +59,8 @@ defmodule ExifParser.Header do
       _err -> {:error, "Can't parse TiffHeader"}
     end
   end
+
+  def parse(_) do
+    {:error, "Can't parse TiffHeader"}
+  end
 end
