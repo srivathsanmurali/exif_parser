@@ -58,6 +58,7 @@ defmodule ExifParser.Tag.Value do
   def data_type_to_byte_length(:tiff_dfloat, component_count), do: 8 * component_count
 
   # defp decode_numeric(value, component_count, size, endian) do
+  defp decode_numeric("", _,_,_), do: 0
   defp decode_numeric(value, 1, type_size, endian) do
     <<data::binary-size(type_size), _::binary>> = value
     :binary.decode_unsigned(data, endian)
@@ -67,6 +68,8 @@ defmodule ExifParser.Tag.Value do
     decode_many_numeric(value, data_count, type_size, endian)
   end
 
+
+  defp decode_many_numeric("", _,_,_), do: []
   defp decode_many_numeric(_value, 0, _type_size, _endian), do: []
 
   defp decode_many_numeric(value, data_count, type_size, endian) do
@@ -85,6 +88,8 @@ defmodule ExifParser.Tag.Value do
 
   defp decode_rational(value, data_count, endian, signed \\ :unsigned)
 
+  defp decode_rational("", _,_,_), do: 0
+
   defp decode_rational(value, 1, endian, signed) do
     <<numerator::binary-size(4), denominator::binary-size(4), _rest::binary>> = value
     numerator = :binary.decode_unsigned(numerator, endian) |> maybe_signed_int(signed)
@@ -100,6 +105,8 @@ defmodule ExifParser.Tag.Value do
   defp decode_rational(value, data_count, endian, signed) do
     decode_many_rational(value, data_count, endian, signed)
   end
+
+  defp decode_many_rational("", _,_,_), do: []
 
   defp decode_many_rational(value, data_count, endian, signed) do
     <<rational::binary-size(8), rest::binary>> = value
