@@ -99,6 +99,8 @@ defmodule ExifParser.ImageFileDirectory do
     ]
   end
 
+  defp parse_tags(%__MODULE__{num_entries: 0}, _endian, _start, _tag_type), do: nil
+
   defp parse_tags(
          %__MODULE__{offset: ifd_offset, num_entries: num_entries},
          endian,
