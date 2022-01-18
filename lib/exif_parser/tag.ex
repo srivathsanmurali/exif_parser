@@ -96,7 +96,7 @@ defmodule ExifParser.Tag do
          start_of_tiff,
          endian
        )
-       when tag_name in [:exif, :gps, :interoperability] do
+       when tag_name in [:exif, :gps, :interoperability, :geo] do
     [sub_ifd | []]=
       ExifParser.ImageFileDirectory.parse_ifds(
         endian,
