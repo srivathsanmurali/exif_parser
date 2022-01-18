@@ -1,9 +1,9 @@
 defmodule ExifParser.Tag.LookUp do
   alias ExifParser.Tag
-  
-  @type tag_type :: :tiff | :exif | :interop | :gps
+
+  @type tag_type :: :tiff | :exif | :interop | :gps | :geo
   @spec look_up_name(tag :: Tag, tag_type :: tag_type) :: atom
-  
+
   def look_up_name(tag, tag_type \\ :tiff)
   # tiff tags
   def look_up_name(%Tag{tag_id: 0x000b} = tag, :tiff), do: %Tag{tag | tag_name: :processing_software}
@@ -282,13 +282,13 @@ defmodule ExifParser.Tag.LookUp do
   def look_up_name(%Tag{tag_id: 0xa433} = tag, :exif), do: %Tag{tag | tag_name: :lens_make}
   def look_up_name(%Tag{tag_id: 0xa434} = tag, :exif), do: %Tag{tag | tag_name: :lens_model}
   def look_up_name(%Tag{tag_id: 0xa435} = tag, :exif), do: %Tag{tag | tag_name: :lens_serial_number}
-  
+
   def look_up_name(%Tag{tag_id: 0x0001} = tag, :interop), do: %Tag{tag | tag_name: :interoperability_index}
   def look_up_name(%Tag{tag_id: 0x0002} = tag, :interop), do: %Tag{tag | tag_name: :interoperability_version}
   def look_up_name(%Tag{tag_id: 0x1000} = tag, :interop), do: %Tag{tag | tag_name: :related_image_file_format}
   def look_up_name(%Tag{tag_id: 0x1001} = tag, :interop), do: %Tag{tag | tag_name: :related_image_width}
   def look_up_name(%Tag{tag_id: 0x1002} = tag, :interop), do: %Tag{tag | tag_name: :related_image_length}
-  
+
   def look_up_name(%Tag{tag_id: 0x0000} = tag, :gps), do: %Tag{tag | tag_name: :gps_version_i_d}
   def look_up_name(%Tag{tag_id: 0x0001} = tag, :gps), do: %Tag{tag | tag_name: :gps_latitude_ref}
   def look_up_name(%Tag{tag_id: 0x0002} = tag, :gps), do: %Tag{tag | tag_name: :gps_latitude}
@@ -320,7 +320,14 @@ defmodule ExifParser.Tag.LookUp do
   def look_up_name(%Tag{tag_id: 0x001c} = tag, :gps), do: %Tag{tag | tag_name: :gps_area_information}
   def look_up_name(%Tag{tag_id: 0x001d} = tag, :gps), do: %Tag{tag | tag_name: :gps_date_stamp}
   def look_up_name(%Tag{tag_id: 0x001e} = tag, :gps), do: %Tag{tag | tag_name: :gps_differential}
-  
+
+  def look_up_name(%Tag{tag_id: 0x830e} = tag, :geo), do: %Tag{tag | tag_name: :geo_pixelscale}
+  def look_up_name(%Tag{tag_id: 0x8482} = tag, :geo), do: %Tag{tag | tag_name: :geo_tiepoints}
+  def look_up_name(%Tag{tag_id: 0x85d8} = tag, :geo), do: %Tag{tag | tag_name: :geo_transmatrix}
+  def look_up_name(%Tag{tag_id: 0x87af} = tag, :geo), do: %Tag{tag | tag_name: :geo_keydirectory}
+  def look_up_name(%Tag{tag_id: 0x87b0} = tag, :geo), do: %Tag{tag | tag_name: :geo_doubleparams}
+  def look_up_name(%Tag{tag_id: 0x87b1} = tag, :geo), do: %Tag{tag | tag_name: :geo_asciiparams}
+
   def look_up_name(tag, _), do: %Tag{tag | tag_name: :unknown}
 
 end
