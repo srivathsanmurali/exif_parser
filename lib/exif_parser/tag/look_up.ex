@@ -212,6 +212,14 @@ defmodule ExifParser.Tag.LookUp do
   def look_up_name(%Tag{tag_id: 0xc74e} = tag, :tiff), do: %Tag{tag | tag_name: :opcode_list3}
   def look_up_name(%Tag{tag_id: 0xc761} = tag, :tiff), do: %Tag{tag | tag_name: :noise_profile}
 
+  # GeoTiff tags
+  def look_up_name(%Tag{tag_id: 0x830e} = tag, :tiff), do: %Tag{tag | tag_name: :geo_pixelscale}
+  def look_up_name(%Tag{tag_id: 0x8482} = tag, :tiff), do: %Tag{tag | tag_name: :geo_tiepoints}
+  def look_up_name(%Tag{tag_id: 0x85d8} = tag, :tiff), do: %Tag{tag | tag_name: :geo_transmatrix}
+  def look_up_name(%Tag{tag_id: 0x87af} = tag, :tiff), do: %Tag{tag | tag_name: :geo_keydirectory}
+  def look_up_name(%Tag{tag_id: 0x87b0} = tag, :tiff), do: %Tag{tag | tag_name: :geo_doubleparams}
+  def look_up_name(%Tag{tag_id: 0x87b1} = tag, :tiff), do: %Tag{tag | tag_name: :geo_asciiparams}
+
   # exif
   def look_up_name(%Tag{tag_id: 0x829a} = tag, :exif), do: %Tag{tag | tag_name: :exposure_time}
   def look_up_name(%Tag{tag_id: 0x829d} = tag, :exif), do: %Tag{tag | tag_name: :f_number}
